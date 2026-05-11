@@ -1,0 +1,3 @@
+pnpm biome check --write --no-errors-on-unmatched --files-ignore-unknown=true
+pnpm run lint
+pnpm run tsc --noEmit

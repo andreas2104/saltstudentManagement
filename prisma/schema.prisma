@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+}
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  userId    Int       @id @default(autoincrement())
+  name      String
+  lastname String
+  contact String
+  status  Status @default(ACTIVE)
+  email     String    @unique
+  role      Role      @default(INSTRUCTOR)
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  account   Account[]
+  sessions  Session[]
+}
+
+model Account {
+  acountId          Int     @id @default(autoincrement())
+  userId            Int
+  provider          String
+  providerAccountId String
+  accessToken       String
+  refreshToken      String?
+  expiresAt         Int?
+  tokenType         String?
+  scope             String?
+  idToken           String?
+  sessionState      String?
+  user              User    @relation(fields: [userId], references: [userId])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  sessionId    String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+
+model SchoolYear {
+  schoolYearId Int @id @default(autoincrement())
+  label String
+  startDate DateTime
+  endDate DateTime
+  status Status @default(ACTIVE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
