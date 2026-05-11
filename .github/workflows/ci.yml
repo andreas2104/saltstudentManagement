@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.2.0
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prisma Validate and Generate
+        run: |
+          npx prisma validate
+          npx prisma generate
+
+      - name: Lint (Biome)
+        run: pnpm exec biome ci .
+
+      - name: Lint (ESLint)
+        run: pnpm run lint
+
+      - name: Type Check
+        run: pnpm tsc --noEmit
+
+      - name: Build Application
+        run: pnpm run build
+        env:
+          DATABASE_URL: "file:./dev.db"
+          NEXTAUTH_SECRET: "tmp"
+          BETTER_AUTH_SECRET: "tmp"
+
+      - name: Verify Docker Build
+        run: docker build . -t event-app:latest
