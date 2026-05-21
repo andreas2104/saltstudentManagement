@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useSyncExternalStore } from "react";
 import Loading from "../components/ui/Loading";
 import { UserProvider, useUser } from "../context/userContext";
+import SchoolYearSelector from "../components/SchoolYearSelector";
 
 interface NavItem {
   href: string;
@@ -178,23 +179,26 @@ function Header({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        {isLoading ? (
-          <Loading size={20} message="" />
-        ) : (
-          userFormat && (
-            <span className="hidden sm:block text-sm text-gray-600 font-medium truncate max-w-[140px]">
-              {userFormat.name ?? userFormat.email}
-            </span>
-          )
-        )}
-        <button
-          type="button"
-          onClick={logout}
-          className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium px-3 py-1.5 rounded-lg transition-colors duration-200"
-        >
-          Logout
-        </button>
+      <div className="flex items-center gap-6">
+        <SchoolYearSelector />
+        <div className="flex items-center gap-3">
+          {isLoading ? (
+            <Loading size={20} message="" />
+          ) : (
+            userFormat && (
+              <span className="hidden sm:block text-sm text-gray-600 font-medium truncate max-w-[140px]">
+                {userFormat.name ?? userFormat.email}
+              </span>
+            )
+          )}
+          <button
+            type="button"
+            onClick={logout}
+            className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium px-3 py-1.5 rounded-lg transition-colors duration-200"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </header>
   );
