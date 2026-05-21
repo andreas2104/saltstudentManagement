@@ -77,6 +77,23 @@ export async function POST(req: Request) {
   }
 }
 
+export async function GET() {
+  try {
+    const schoolYears = await prisma.schoolYear.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return NextResponse.json(schoolYears);
+  } catch (error) {
+    console.error("GET /api/schoolYear error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(req: Request) {
   try {
     const isAdmin = await isAdminUser(req);
