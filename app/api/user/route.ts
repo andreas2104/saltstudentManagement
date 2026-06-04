@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { determineUserRole } from "@/lib/adminUtils";
@@ -6,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(_req: Request) {
   try {
     const body = await _req.json();
-    const { name, email, password, role } = body;
+    const { name, email, password, role, lastname, contact } = body;
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -33,9 +34,11 @@ export async function POST(_req: Request) {
     const user = await prisma.user.create({
       data: {
         name,
+        lastname: lastname || "",
+        contact: contact || "",
         email: email.toLowerCase(),
         password: hashedPassword,
-        role: userRole,
+        role: userRole as Role,
       },
       select: {
         userId: true,

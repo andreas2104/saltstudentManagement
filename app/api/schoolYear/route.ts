@@ -1,25 +1,24 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { isAdminUser } from "@/lib/auth";
 import { Status } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { verifyAdminAccess } from "@/lib/guards";
+import { prisma } from "@/lib/prisma";
 
-const schoolYearSchema = z.object({
-  label: z.string().min(1, "Label is required"),
-  startDate: z.string().datetime("Invalid startDate format"),
-  endDate: z.string().datetime("Invalid endDate format"),
-}).refine((data) => new Date(data.endDate) > new Date(data.startDate), {
-  message: "endDate must be after startDate",
-  path: ["endDate"],
-});
+const schoolYearSchema = z
+  .object({
+    label: z.string().min(1, "Label is required"),
+    startDate: z.string().datetime("Invalid startDate format"),
+    endDate: z.string().datetime("Invalid endDate format"),
+  })
+  .refine((data) => new Date(data.endDate) > new Date(data.startDate), {
+    message: "endDate must be after startDate",
+    path: ["endDate"],
+  });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const isAdmin = await isAdminUser(req);
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 });
-    }
-
+    const accessError = await verifyAdminAccess(req);
+    if (accessError) return accessError;
     let body: unknown;
     try {
       body = await req.json();
@@ -30,8 +29,11 @@ export async function POST(req: Request) {
     const parsed = schoolYearSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Validation failed", details: parsed.error.flatten().fieldErrors },
-        { status: 400 }
+        {
+          error: "Validation failed",
+          details: parsed.error.flatten().fieldErrors,
+        },
+        { status: 400 },
       );
     }
 
@@ -52,28 +54,30 @@ export async function POST(req: Request) {
           label,
           startDate: new Date(startDate),
           endDate: new Date(endDate),
-          status: Status.ACTIVE, 
+          status: Status.ACTIVE,
         },
       });
     });
 
     return NextResponse.json(
       { message: "School year created successfully", schoolYear },
-      { status: 201 } 
+      { status: 201 },
     );
-
   } catch (error) {
     if (error instanceof Error) {
       if (error.message === "ACTIVE_EXISTS") {
         return NextResponse.json(
           { error: "An active school year already exists" },
-          { status: 409 }
+          { status: 409 },
         );
       }
     }
 
     console.error("POST /api/schoolYear error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }
 
@@ -89,31 +93,29 @@ export async function GET() {
     console.error("GET /api/schoolYear error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-export async function PATCH(req: Request) {
+export async function PATCH(req: NextRequest) {
   try {
-    const isAdmin = await isAdminUser(req);
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 });
-    }
+    const accessError = await verifyAdminAccess(req);
+    if (accessError) return accessError;
 
-    let body: any;
+    let body: unknown;
     try {
       body = await req.json();
     } catch {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    const { id, status } = body;
+    const { id, status } = body as { id: number; status: string };
 
     if (!id || status !== Status.ACTIVE) {
       return NextResponse.json(
         { error: "Invalid request. 'id' and 'status: ACTIVE' are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -141,12 +143,17 @@ export async function PATCH(req: Request) {
       message: "School year activated successfully",
       schoolYear: updatedSchoolYear,
     });
-
   } catch (error) {
     if (error instanceof Error && error.message === "NOT_FOUND") {
-      return NextResponse.json({ error: "School year not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "School year not found" },
+        { status: 404 },
+      );
     }
     console.error("PATCH /api/schoolYear error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

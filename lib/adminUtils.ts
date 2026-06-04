@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { type PrismaClient, Role } from "@prisma/client";
 
 export function isAdminEmail(email: string): boolean {
   const adminEmails =
@@ -29,10 +29,12 @@ export async function determineUserRole(
   return firstUser || adminEmail ? Role.ADMIN : Role.INSTRUCTOR;
 }
 
-export async function isAdminUser(email: string, prisma: PrismaClient): Promise<boolean> {
+export async function isAdminUser(
+  email: string,
+  prisma: PrismaClient,
+): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { email: email.toLowerCase() },
   });
   return user?.role === Role.ADMIN;
 }
-
