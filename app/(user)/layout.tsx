@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useSyncExternalStore } from "react";
+import SchoolYearSelector from "../components/SchoolYearSelector";
 import Loading from "../components/ui/Loading";
 import { UserProvider, useUser } from "../context/userContext";
-import SchoolYearSelector from "../components/SchoolYearSelector";
 
 interface NavItem {
   href: string;
@@ -17,7 +17,6 @@ const NAVIGATION_ROUTES: NavItem[] = [
   { href: "/events", label: "Events" },
   { href: "/users", label: "Users" },
 ];
-
 
 function useIsMounted() {
   return useSyncExternalStore(
@@ -127,7 +126,7 @@ function Header({
   onToggleMenu: () => void;
   isOpen: boolean;
 }) {
-  const isMounted = useIsMounted(); 
+  const isMounted = useIsMounted();
   const { userFormat, isLoading, logout } = useUser();
 
   if (!isMounted) return null;

@@ -1,30 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { 
-  FiPlus, 
-  FiTrash2, 
-  FiCheckCircle, 
-  FiCalendar, 
-  FiTag, 
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
   FiAlertCircle,
+  FiCalendar,
+  FiCheckCircle,
   FiLoader,
-  FiRefreshCw
+  FiPlus,
+  FiRefreshCw,
+  FiTag,
+  FiTrash2,
 } from "react-icons/fi";
+import * as z from "zod";
 import { useSchoolYear } from "../../context/SchoolYearContext";
 
 // Zod schema for form validation
-const schoolYearSchema = z.object({
-  label: z.string().min(1, "Label is required (e.g., 2025-2026)"),
-  startDate: z.string().min(1, "Start date is required"),
-  endDate: z.string().min(1, "End date is required"),
-}).refine((data) => new Date(data.endDate) > new Date(data.startDate), {
-  message: "End date must be after start date",
-  path: ["endDate"],
-});
+const schoolYearSchema = z
+  .object({
+    label: z.string().min(1, "Label is required (e.g., 2025-2026)"),
+    startDate: z.string().min(1, "Start date is required"),
+    endDate: z.string().min(1, "End date is required"),
+  })
+  .refine((data) => new Date(data.endDate) > new Date(data.startDate), {
+    message: "End date must be after start date",
+    path: ["endDate"],
+  });
 
 type SchoolYearForm = z.infer<typeof schoolYearSchema>;
 
@@ -54,23 +56,23 @@ export default function SchoolYearManagement() {
     resolver: zodResolver(schoolYearSchema),
   });
 
-  const fetchSchoolYears = async () => {
+  const fetchSchoolYears = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch("/api/schoolYear");
       if (!res.ok) throw new Error("Failed to fetch school years");
       const data = await res.json();
       setSchoolYears(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSchoolYears();
-  }, []);
+  }, [fetchSchoolYears]);
 
   const handleRefresh = async () => {
     await fetchSchoolYears();
@@ -103,8 +105,8 @@ export default function SchoolYearManagement() {
       setSuccess("School year created successfully!");
       reset();
       handleRefresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setSubmitting(false);
     }
@@ -125,8 +127,8 @@ export default function SchoolYearManagement() {
 
       setSuccess("School year deleted successfully");
       handleRefresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     }
   };
 
@@ -145,15 +147,14 @@ export default function SchoolYearManagement() {
 
       setSuccess("School year activated successfully");
       handleRefresh();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0a0a0c] text-slate-200 p-6 md:p-12 font-[Inter]">
       <div className="max-w-6xl mx-auto space-y-12">
-        
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
@@ -164,7 +165,8 @@ export default function SchoolYearManagement() {
               Define and manage academic cycles for your institution.
             </p>
           </div>
-          <button 
+          <button
+            type="button"
             onClick={handleRefresh}
             className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-slate-700/50 transition-all active:scale-95"
           >
@@ -181,26 +183,37 @@ export default function SchoolYearManagement() {
               <div className="animate-in slide-in-from-right-full duration-300 pointer-events-auto bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-center gap-3 backdrop-blur-xl shadow-2xl shadow-red-500/10 mb-3">
                 <FiAlertCircle className="shrink-0" />
                 <span>{error}</span>
-                <button onClick={() => setError(null)} className="ml-4 hover:text-white pointer-events-auto">×</button>
+                <button
+                  type="button"
+                  onClick={() => setError(null)}
+                  className="ml-4 hover:text-white pointer-events-auto"
+                >
+                  ×
+                </button>
               </div>
             )}
             {success && (
               <div className="animate-in slide-in-from-right-full duration-300 pointer-events-auto bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl flex items-center gap-3 backdrop-blur-xl shadow-2xl shadow-emerald-500/10">
                 <FiCheckCircle className="shrink-0" />
                 <span>{success}</span>
-                <button onClick={() => setSuccess(null)} className="ml-4 hover:text-white pointer-events-auto">×</button>
+                <button
+                  type="button"
+                  onClick={() => setSuccess(null)}
+                  className="ml-4 hover:text-white pointer-events-auto"
+                >
+                  ×
+                </button>
               </div>
             )}
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
           {/* Form Section */}
           <div className="lg:col-span-4">
             <div className="sticky top-12 bg-white/[0.03] border border-white/[0.08] backdrop-blur-md p-8 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700" />
-              
+
               <div className="relative space-y-8">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg shadow-indigo-500/20">
@@ -211,47 +224,65 @@ export default function SchoolYearManagement() {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-400 ml-1 flex items-center gap-2">
+                    <label
+                      htmlFor="label"
+                      className="text-sm font-medium text-slate-400 ml-1 flex items-center gap-2"
+                    >
                       <FiTag className="text-indigo-400" />
                       Label
                     </label>
                     <input
+                      id="label"
                       {...register("label")}
                       placeholder="e.g. 2025 - 2026"
                       className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-600"
                     />
                     {errors.label && (
-                      <p className="text-red-400 text-xs ml-2 mt-1">{errors.label.message}</p>
+                      <p className="text-red-400 text-xs ml-2 mt-1">
+                        {errors.label.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-400 ml-1 flex items-center gap-2">
+                    <label
+                      htmlFor="startDate"
+                      className="text-sm font-medium text-slate-400 ml-1 flex items-center gap-2"
+                    >
                       <FiCalendar className="text-blue-400" />
                       Start Date
                     </label>
                     <input
+                      id="startDate"
                       type="date"
                       {...register("startDate")}
                       className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 outline-none transition-all [color-scheme:dark]"
                     />
                     {errors.startDate && (
-                      <p className="text-red-400 text-xs ml-2 mt-1">{errors.startDate.message}</p>
+                      <p className="text-red-400 text-xs ml-2 mt-1">
+                        {errors.startDate.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-400 ml-1 flex items-center gap-2">
+                    <label
+                      htmlFor="endDate"
+                      className="text-sm font-medium text-slate-400 ml-1 flex items-center gap-2"
+                    >
                       <FiCalendar className="text-purple-400" />
                       End Date
                     </label>
                     <input
+                      id="endDate"
                       type="date"
                       {...register("endDate")}
                       className="w-full bg-black/40 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500 outline-none transition-all [color-scheme:dark]"
                     />
                     {errors.endDate && (
-                      <p className="text-red-400 text-xs ml-2 mt-1">{errors.endDate.message}</p>
+                      <p className="text-red-400 text-xs ml-2 mt-1">
+                        {errors.endDate.message}
+                      </p>
                     )}
                   </div>
 
@@ -288,7 +319,9 @@ export default function SchoolYearManagement() {
                 {loading ? (
                   <div className="flex flex-col items-center justify-center py-24 gap-4">
                     <div className="w-12 h-12 border-2 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
-                    <p className="text-slate-500 animate-pulse">Loading school years...</p>
+                    <p className="text-slate-500 animate-pulse">
+                      Loading school years...
+                    </p>
                   </div>
                 ) : schoolYears.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
@@ -296,28 +329,34 @@ export default function SchoolYearManagement() {
                       <FiTag className="text-3xl text-slate-600" />
                     </div>
                     <div>
-                      <p className="text-xl font-medium text-slate-400">No school years found</p>
-                      <p className="text-slate-600 mt-1">Start by creating your first academic year.</p>
+                      <p className="text-xl font-medium text-slate-400">
+                        No school years found
+                      </p>
+                      <p className="text-slate-600 mt-1">
+                        Start by creating your first academic year.
+                      </p>
                     </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 gap-4">
                     {schoolYears.map((year) => (
-                      <div 
+                      <div
                         key={year.schoolYearId}
                         className={`group relative p-6 rounded-3xl border transition-all duration-300 ${
-                          year.status === 'ACTIVE' 
-                            ? 'bg-indigo-500/5 border-indigo-500/20' 
-                            : 'bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]'
+                          year.status === "ACTIVE"
+                            ? "bg-indigo-500/5 border-indigo-500/20"
+                            : "bg-white/[0.02] border-white/5 hover:border-white/10 hover:bg-white/[0.04]"
                         }`}
                       >
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                           <div className="flex items-center gap-6">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner ${
-                              year.status === 'ACTIVE'
-                                ? 'bg-indigo-500/20 text-indigo-400'
-                                : 'bg-slate-800 text-slate-600'
-                            }`}>
+                            <div
+                              className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner ${
+                                year.status === "ACTIVE"
+                                  ? "bg-indigo-500/20 text-indigo-400"
+                                  : "bg-slate-800 text-slate-600"
+                              }`}
+                            >
                               <FiTag />
                             </div>
                             <div>
@@ -327,9 +366,13 @@ export default function SchoolYearManagement() {
                               <div className="flex flex-wrap items-center gap-4 mt-1 text-sm text-slate-500">
                                 <span className="flex items-center gap-1.5 bg-slate-800/40 px-2.5 py-1 rounded-lg">
                                   <FiCalendar className="text-xs" />
-                                  {new Date(year.startDate).toLocaleDateString()} — {new Date(year.endDate).toLocaleDateString()}
+                                  {new Date(
+                                    year.startDate,
+                                  ).toLocaleDateString()}{" "}
+                                  —{" "}
+                                  {new Date(year.endDate).toLocaleDateString()}
                                 </span>
-                                {year.status === 'ACTIVE' && (
+                                {year.status === "ACTIVE" && (
                                   <span className="flex items-center gap-1 text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
                                     <FiCheckCircle />
                                     Active
@@ -340,15 +383,19 @@ export default function SchoolYearManagement() {
                           </div>
 
                           <div className="flex items-center gap-3">
-                            {year.status !== 'ACTIVE' && (
+                            {year.status !== "ACTIVE" && (
                               <button
-                                onClick={() => handleActivate(year.schoolYearId)}
+                                type="button"
+                                onClick={() =>
+                                  handleActivate(year.schoolYearId)
+                                }
                                 className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95"
                               >
                                 Activate
                               </button>
                             )}
                             <button
+                              type="button"
                               onClick={() => handleDelete(year.schoolYearId)}
                               className="p-2.5 bg-red-400/10 hover:bg-red-400/20 text-red-400 rounded-xl transition-all active:scale-90"
                               title="Delete"

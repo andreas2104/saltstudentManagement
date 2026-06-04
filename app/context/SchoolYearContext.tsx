@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface SchoolYear {
   schoolYearId: number;
@@ -19,21 +26,25 @@ interface SchoolYearContextType {
   refreshSchoolYears: () => Promise<void>;
 }
 
-const SchoolYearContext = createContext<SchoolYearContextType | undefined>(undefined);
+const SchoolYearContext = createContext<SchoolYearContextType | undefined>(
+  undefined,
+);
 
 export const SchoolYearProvider = ({ children }: { children: ReactNode }) => {
   const [schoolYears, setSchoolYears] = useState<SchoolYear[]>([]);
-  const [selectedSchoolYearId, setSelectedSchoolYearId] = useState<number | null>(null);
+  const [selectedSchoolYearId, setSelectedSchoolYearId] = useState<
+    number | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchSchoolYears = async () => {
+  const fetchSchoolYears = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/schoolYear");
       if (res.ok) {
         const data = await res.json();
         setSchoolYears(data);
-        
+
         // Set default selected school year to the active one
         const active = data.find((sy: SchoolYear) => sy.status === "ACTIVE");
         if (active && selectedSchoolYearId === null) {
@@ -47,13 +58,14 @@ export const SchoolYearProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedSchoolYearId]);
 
   useEffect(() => {
     fetchSchoolYears();
-  }, []);
+  }, [fetchSchoolYears]);
 
-  const selectedSchoolYear = schoolYears.find(sy => sy.schoolYearId === selectedSchoolYearId) || null;
+  const selectedSchoolYear =
+    schoolYears.find((sy) => sy.schoolYearId === selectedSchoolYearId) || null;
 
   return (
     <SchoolYearContext.Provider
