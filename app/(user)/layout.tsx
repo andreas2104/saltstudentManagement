@@ -14,7 +14,7 @@ interface NavItem {
 
 const NAVIGATION_ROUTES: NavItem[] = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/events", label: "Events" },
+  { href: "/schoolYear", label: "School Year" },
   { href: "/users", label: "Users" },
 ];
 
@@ -43,7 +43,7 @@ function NavLinks({ onClose }: { onClose?: () => void }) {
             key={item.href}
             href={item.href}
             onClick={onClose}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 ${
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-lg transition-all duration-200 ${
               active
                 ? "bg-white text-blue-600 shadow-sm"
                 : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
@@ -51,7 +51,10 @@ function NavLinks({ onClose }: { onClose?: () => void }) {
           >
             <span>{item.label}</span>
             {active && (
+              <div className="ml-auto relative flex h-2 w-2">
               <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500" />
+              <span className="absolute top-[-2px] -right[2px] -block h-4 w-4 bg-blue-600 rounded-full animate-ping"/>
+              </div>
             )}
           </Link>
         );
@@ -62,10 +65,10 @@ function NavLinks({ onClose }: { onClose?: () => void }) {
 
 function Sidebar() {
   return (
-    <aside className="hidden lg:flex flex-col fixed left-0 top-0 h-full w-64 bg-gray-200 shadow-md z-30">
+    <aside className="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 bg-gray-200 shadow-md z-30">
       <div className="flex items-center gap-2 px-5 h-16 border-b border-gray-300">
         <span className="text-2xl">🎟️</span>
-        <span className="font-bold text-lg text-gray-800">EventApp</span>
+        <span className="font-bold text-lg text-red-800">StudentManagement</span>
       </div>
       <NavLinks />
     </aside>
@@ -103,7 +106,7 @@ function MobileDrawer({
         }`}
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-gray-300">
-          <span className="font-bold text-gray-800 text-lg">🎟️ EventApp</span>
+          <span className="font-bold text-gray-800 text-lg">🎟️ SMGM</span>
           <button
             type="button"
             onClick={onClose}
@@ -159,7 +162,7 @@ function Header({
 
         <Link href="/dashboard" className="flex items-center gap-2">
           <span className="text-xl">🎟️</span>
-          <span className="font-bold text-gray-800">EventApp</span>
+          <span className="font-bold text-red-500">SMGM</span>
         </Link>
       </div>
 

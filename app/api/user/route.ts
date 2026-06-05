@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import type { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { determineUserRole } from "@/lib/adminUtils";
