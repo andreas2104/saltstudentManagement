@@ -1,17 +1,25 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { FiCalendar, FiCheck, FiChevronDown } from "react-icons/fi";
 import { useSchoolYear } from "../context/SchoolYearContext";
-import { FiChevronDown, FiCalendar, FiCheck } from "react-icons/fi";
 
 export default function SchoolYearSelector() {
-  const { schoolYears, selectedSchoolYearId, setSelectedSchoolYearId, selectedSchoolYear } = useSchoolYear();
+  const {
+    schoolYears,
+    selectedSchoolYearId,
+    setSelectedSchoolYearId,
+    selectedSchoolYear,
+  } = useSchoolYear();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -32,7 +40,9 @@ export default function SchoolYearSelector() {
         <span className="font-semibold text-sm">
           {selectedSchoolYear?.label || "Select Year"}
         </span>
-        <FiChevronDown className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <FiChevronDown
+          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+        />
       </button>
 
       {isOpen && (
@@ -40,6 +50,7 @@ export default function SchoolYearSelector() {
           <div className="p-2 max-h-64 overflow-y-auto">
             {schoolYears.map((year) => (
               <button
+                type="button"
                 key={year.schoolYearId}
                 onClick={() => {
                   setSelectedSchoolYearId(year.schoolYearId);
@@ -54,10 +65,13 @@ export default function SchoolYearSelector() {
                 <div className="flex flex-col items-start">
                   <span className="font-bold">{year.label}</span>
                   <span className="text-[10px] opacity-70">
-                    {new Date(year.startDate).getFullYear()} - {new Date(year.endDate).getFullYear()}
+                    {new Date(year.startDate).getFullYear()} -{" "}
+                    {new Date(year.endDate).getFullYear()}
                   </span>
                 </div>
-                {selectedSchoolYearId === year.schoolYearId && <FiCheck className="text-blue-500" />}
+                {selectedSchoolYearId === year.schoolYearId && (
+                  <FiCheck className="text-blue-500" />
+                )}
               </button>
             ))}
           </div>

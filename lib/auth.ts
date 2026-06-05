@@ -110,19 +110,21 @@ export function hasRole(
  * Check if the current user (from request or cookies) is an administrator.
  * @param request - Optional NextRequest for use in middleware or API routes.
  */
-export async function isAdminUser(request?: NextRequest | Request): Promise<boolean> {
+export async function isAdminUser(
+  request?: NextRequest | Request,
+): Promise<boolean> {
   let user: JWTPayload | null;
-  
+
   if (request instanceof Request) {
     const cookieHeader = request.headers.get("cookie") || "";
     const token = cookieHeader
-    .split(";")
-    .find(c=> c.trim().startsWith("token="))
-    ?.split("=")[1];
-    // Note: getUserFromRequest expects NextRequest, but Request is often compatible enough 
-    // or we can handle cookie extraction manually if needed. 
+      .split(";")
+      .find((c) => c.trim().startsWith("token="))
+      ?.split("=")[1];
+    // Note: getUserFromRequest expects NextRequest, but Request is often compatible enough
+    // or we can handle cookie extraction manually if needed.
     // For API routes, using cookies() is usually sufficient.
-    user = token ? await verifyToken(token): null;
+    user = token ? await verifyToken(token) : null;
   } else {
     user = await getCurrentUser();
   }
@@ -132,7 +134,7 @@ export async function isAdminUser(request?: NextRequest | Request): Promise<bool
 
 export async function verifyAccess(
   req: NextRequest,
-  allowedRoles: Role[]
+  allowedRoles: Role[],
 ): Promise<JWTPayload | null> {
   const user = await getUserFromRequest(req);
   if (!user || !allowedRoles.includes(user.role)) {
