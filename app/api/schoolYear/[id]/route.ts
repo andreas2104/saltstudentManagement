@@ -5,15 +5,15 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ schoolYearId: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const accessError = await verifyAdminAccess(req);
     if (accessError) return accessError;
 
-    const { schoolYearId } = await params;
+    const { id } = await params;
     const schoolYear = await prisma.schoolYear.findUnique({
-      where: { schoolYearId: Number(schoolYearId) },
+      where: { schoolYearId: Number(id) },
     });
 
     if (!schoolYear) {
@@ -33,15 +33,15 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ schoolYearId: string }> },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const accessError = await verifyAdminAccess(req);
     if (accessError) return accessError;
 
-    const { schoolYearId } = await params;
+    const { id } = await params;
     const schoolYear = await prisma.schoolYear.findUnique({
-      where: { schoolYearId: Number(schoolYearId) },
+      where: { schoolYearId: Number(id) },
     });
 
     if (!schoolYear) {
