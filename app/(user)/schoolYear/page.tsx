@@ -175,8 +175,6 @@ export default function SchoolYearManagement() {
           </button>
         </div>
 
-        {/* Status Messages removed to keep UI clean, or you can keep them if you prefer */}
-        {/* Letting the user know about errors/success via toast would be better but keeping consistency with existing code */}
         {(error || success) && (
           <div className="fixed top-24 right-6 z-50 pointer-events-none">
             {error && (
