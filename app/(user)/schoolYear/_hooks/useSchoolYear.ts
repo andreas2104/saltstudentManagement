@@ -1,7 +1,6 @@
-import { useSchoolYear } from "@/app/context/SchoolYearContext";
 import { useCallback, useState } from "react";
-import { SchoolYear } from "../_type";
-
+import { useSchoolYear } from "@/app/context/SchoolYearContext";
+import type { SchoolYear } from "../_type";
 
 export function useSchoolYears() {
   const { refreshSchoolYears } = useSchoolYear();
@@ -43,7 +42,8 @@ export function useSchoolYears() {
       }),
     });
     const result = await res.json();
-    if (!res.ok) throw new Error(result.error || "Failed to create school year");
+    if (!res.ok)
+      throw new Error(result.error || "Failed to create school year");
     setSuccess("School year created successfully!");
     handleRefresh();
   };
@@ -74,9 +74,16 @@ export function useSchoolYears() {
   };
 
   return {
-    schoolYears, loading, error, success,
-    setError, setSuccess,
-    fetchSchoolYears, handleRefresh,
-    handleCreate, handleDelete, handleActivate,
+    schoolYears,
+    loading,
+    error,
+    success,
+    setError,
+    setSuccess,
+    fetchSchoolYears,
+    handleRefresh,
+    handleCreate,
+    handleDelete,
+    handleActivate,
   };
 }

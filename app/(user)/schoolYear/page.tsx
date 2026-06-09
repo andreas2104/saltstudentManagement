@@ -175,7 +175,7 @@ export default function SchoolYearManagement() {
           </button>
         </div>
 
-     {(error || success) && (
+        {(error || success) && (
           <div className="fixed top-24 right-6 z-50 pointer-events-none">
             {error && (
               <div className="animate-in slide-in-from-right-full duration-300 pointer-events-auto bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-center gap-3 backdrop-blur-xl shadow-2xl shadow-red-500/10 mb-3">
