@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useSchoolYear } from "@/app/context/SchoolYearContext";
-import type { SchoolYear } from "../_type";
+import type { SchoolYear } from "../_types";
 
 export function useSchoolYears() {
   const { refreshSchoolYears } = useSchoolYear();
