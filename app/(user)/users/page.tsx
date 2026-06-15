@@ -5,6 +5,7 @@ import Link from "next/link";
 import Button from "@/app/components/ui/Button";
 import Table from "@/app/components/ui/Table";
 import { useUser } from "@/app/context/userContext";
+import Loading from "@/app/components/ui/Loading";
 
 export interface User {
   userId: number;
@@ -39,6 +40,10 @@ export default function UsersPage() {
     queryKey: ["users"],
     queryFn: fetchUsers,
   });
+
+  if (isLoading && users.length === 0) {
+    return <Loading skeleton />;
+  }
 
   const deleteMutation = useMutation({
     mutationFn: (userId: number) => deleteUser(userId),

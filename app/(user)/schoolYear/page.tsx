@@ -5,6 +5,7 @@ import { FiAlertCircle, FiCheckCircle, FiRefreshCw } from "react-icons/fi";
 import { SchoolYearList } from "./_components/SchoolYearList";
 import { SchoolYearForm } from "./_components/ShoolYearForm";
 import { useSchoolYears } from "./_hooks/useSchoolYear";
+import Loading from "../../components/ui/Loading";
 
 export default function SchoolYearPage() {
   const {
@@ -24,6 +25,10 @@ export default function SchoolYearPage() {
   useEffect(() => {
     fetchSchoolYears();
   }, [fetchSchoolYears]);
+
+  if (loading && schoolYears.length === 0) {
+    return <Loading skeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 md:p-12">
