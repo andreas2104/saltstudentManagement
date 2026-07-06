@@ -6,12 +6,15 @@ on:
   pull_request:
     branches: [ main, dev ]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v4.4.0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -49,4 +52,4 @@ jobs:
           BETTER_AUTH_SECRET: "tmp"
 
       - name: Verify Docker Build
-        run: docker build . -t event-app:latest
+        run: docker build . -t smg-app:latest
