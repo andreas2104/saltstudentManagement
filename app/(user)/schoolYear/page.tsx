@@ -2,10 +2,10 @@
 
 import { useEffect } from "react";
 import { FiAlertCircle, FiCheckCircle, FiRefreshCw } from "react-icons/fi";
+import Loading from "../../components/ui/Loading";
 import { SchoolYearList } from "./_components/SchoolYearList";
 import { SchoolYearForm } from "./_components/ShoolYearForm";
 import { useSchoolYears } from "./_hooks/useSchoolYear";
-import Loading from "../../components/ui/Loading";
 
 export default function SchoolYearPage() {
   const {
