@@ -3,9 +3,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import Button from "@/app/components/ui/Button";
+import Loading from "@/app/components/ui/Loading";
 import Table from "@/app/components/ui/Table";
 import { useUser } from "@/app/context/userContext";
-import Loading from "@/app/components/ui/Loading";
 
 export interface User {
   userId: number;

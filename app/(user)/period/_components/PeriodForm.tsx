@@ -1,12 +1,12 @@
 "use client";
-import { FiTag, FiCalendar } from "react-icons/fi";
+import { FiCalendar, FiTag } from "react-icons/fi";
 
 interface Props {
   onSubmit: (data: FormValues) => Promise<void>;
   onError: (msg: string) => void;
 }
 
-export function PeriodForm({ onSubmit, onError }: Props) {
+export function PeriodForm() {
   return (
     <form className="space-y-6">
       <div>

@@ -11,10 +11,6 @@ enum Role {
   ADMIN
   INSTRUCTOR
 }
-enum Status {
-  ACTIVE
-  INACTIVE
-}
 
 model User {
   userId    Int       @id @default(autoincrement())
@@ -64,6 +60,10 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+enum Status {
+  ACTIVE
+  INACTIVE
+}
 
 model SchoolYear {
   schoolYearId Int @id @default(autoincrement())
@@ -74,5 +74,17 @@ model SchoolYear {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
+enum PeriodStatus {
+  DRAFT
+  CLOSED
+}
+model Period {
+  periodId Int @id default(autoincrement())
+  label String
+  startDate DateTime
+  endDate DateTime
+  status PeriodStatus @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
