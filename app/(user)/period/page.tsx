@@ -1,53 +1,100 @@
 "use client";
-import { FiAlertCircle, FiPlus, FiRefreshCw } from "react-icons/fi";
+
+import { useEffect } from "react";
+import { FiAlertCircle, FiCheckCircle, FiRefreshCw } from "react-icons/fi";
+import Loading from "../../components/ui/Loading";
 import { PeriodForm } from "./_components/PeriodForm";
 import { PeriodList } from "./_components/PeriodList";
-export default function PeriodePage() {
+import { usePeriods } from "./_hooks/usePeriod";
+
+export default function PeriodPage() {
+  const {
+    periods,
+    loading,
+    error,
+    success,
+    setError,
+    setSuccess,
+    fetchPeriods,
+    handleRefresh,
+    handleCreate,
+    handleDelete,
+    handleToggleStatus,
+  } = usePeriods();
+
+  useEffect(() => {
+    fetchPeriods();
+  }, [fetchPeriods]);
+
+  if (loading && periods.length === 0) {
+    return <Loading skeleton />;
+  }
+
   return (
-    <div className="min-h-screen  text-slate-20  p-6 md:p-12 front-[Inter]">
-      <div className="max-w-6xl mx-auto space-y-12">
-        <div className="flex flex-col md:flex-row md:items-center justify between gap-6">
-          <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent ">
-              Period
+    <div className="min-h-screen bg-gray-50 p-6 md:p-12">
+      <div className="max-w-5xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Academic period management
             </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Define and manage periods within academic years.
+            </p>
           </div>
           <button
             type="button"
-            className="flex items-center gap-2px-4 py-2 bg-slate-4
-            00/50 hover:bg-slate-500 rounded-xl border-slate-700/50 tramsition-all active:scale-95"
+            onClick={handleRefresh}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition-all"
           >
-            <FiRefreshCw className="animate-spin" />
+            <FiRefreshCw className={loading ? "animate-spin" : ""} />
             Refresh
           </button>
         </div>
 
-        <div className="fixed top-24 right-6 z-50 pointer-events-none ">
-          <div className="animate-in slide-in-from-right-full duration-300 pointer-events-auto bg-red-500/10 border-red-500/20 text-400 p-4 rounded-2xl flex items-center gap-3 backdrop-blur-xl shadow-2xl shadow-red-500/10 mb-3">
-            <FiAlertCircle className="shrink-0" />
-            <span>error</span>
-            <button
-              type="button"
-              className="ml-4 hover:text-white poiter-events-auto"
-            >
-              x
-            </button>
-          </div>
+        {/* Toasts */}
+        <div className="fixed top-6 right-6 z-50 flex flex-col gap-2 pointer-events-none">
+          {error && (
+            <div className="pointer-events-auto flex items-center gap-3 bg-white border border-red-100 text-red-600 px-4 py-3 rounded-2xl shadow-sm text-sm">
+              <FiAlertCircle className="shrink-0" />
+              <span>{error}</span>
+              <button
+                type="button"
+                onClick={() => setError(null)}
+                className="ml-3 text-gray-400 hover:text-gray-700"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          {success && (
+            <div className="pointer-events-auto flex items-center gap-3 bg-white border border-green-100 text-green-700 px-4 py-3 rounded-2xl shadow-sm text-sm">
+              <FiCheckCircle className="shrink-0" />
+              <span>{success}</span>
+              <button
+                type="button"
+                onClick={() => setSuccess(null)}
+                className="ml-3 text-gray-400 hover:text-gray-700"
+              >
+                ×
+              </button>
+            </div>
+          )}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
-          {/*<div className="lg:col-span-4">
-            <div className="sticky top-12 bg-white/[0.03] border border-white/-[0.08] backdrop-blur-md p-8 rounded-[2.5rem] shadow-2xl relative overfow-hidden group">
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 blur-[80px] group-hover:bg-indigo-500/20 transition-all duration-700" />
-              <div className="relative space-y-8">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg shadow-indigo-500/20 transition-all duration-700">
-                    <FiPlus className="text-white text-xl" />
-                  </div>
-                  <h2 className="text-2xl font-semibold">New Period</h2>
-                </div>*/}
 
-          <PeriodForm />
-          <PeriodList />
+        {/* Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+          <PeriodForm
+            onSubmit={handleCreate}
+            onError={(msg) => setError(msg)}
+          />
+          <PeriodList
+            periods={periods}
+            loading={loading}
+            onToggleStatus={handleToggleStatus}
+            onDelete={handleDelete}
+          />
         </div>
       </div>
     </div>
