@@ -1,4 +1,11 @@
-import { FiCalendar, FiCheckCircle, FiBookOpen, FiTag, FiTrash2, FiAlertCircle } from "react-icons/fi";
+import {
+  FiAlertCircle,
+  FiBookOpen,
+  FiCalendar,
+  FiCheckCircle,
+  FiTag,
+  FiTrash2,
+} from "react-icons/fi";
 import type { Period } from "../_types";
 
 interface Props {

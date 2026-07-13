@@ -40,8 +40,7 @@ export function usePeriods() {
       }),
     });
     const result = await res.json();
-    if (!res.ok)
-      throw new Error(result.error || "Failed to create period");
+    if (!res.ok) throw new Error(result.error || "Failed to create period");
     setSuccess("Period created successfully!");
     handleRefresh();
   };
@@ -57,7 +56,10 @@ export function usePeriods() {
     handleRefresh();
   };
 
-  const handleToggleStatus = async (id: number, currentStatus: "DRAFT" | "CLOSED") => {
+  const handleToggleStatus = async (
+    id: number,
+    currentStatus: "DRAFT" | "CLOSED",
+  ) => {
     const newStatus = currentStatus === "DRAFT" ? "CLOSED" : "DRAFT";
     const res = await fetch("/api/period", {
       method: "PATCH",

@@ -41,16 +41,16 @@ export default function UsersPage() {
     queryFn: fetchUsers,
   });
 
-  if (isLoading && users.length === 0) {
-    return <Loading skeleton />;
-  }
-
   const deleteMutation = useMutation({
     mutationFn: (userId: number) => deleteUser(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
+
+  if (isLoading && users.length === 0) {
+    return <Loading skeleton />;
+  }
 
   const filteredUsers = isAdmin
     ? users

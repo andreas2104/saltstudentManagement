@@ -20,10 +20,7 @@ export async function GET(
     });
 
     if (!period) {
-      return NextResponse.json(
-        { error: "Period not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Period not found" }, { status: 404 });
     }
     return NextResponse.json(period);
   } catch (error) {
@@ -49,10 +46,7 @@ export async function PUT(
     });
 
     if (!period) {
-      return NextResponse.json(
-        { error: "Period not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Period not found" }, { status: 404 });
     }
     return NextResponse.json(period);
   } catch (error) {
@@ -75,10 +69,7 @@ export async function DELETE(
     const periodId = Number(id);
 
     if (Number.isNaN(periodId)) {
-      return NextResponse.json(
-        { error: "Invalid period ID" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Invalid period ID" }, { status: 400 });
     }
 
     await prisma.period.delete({
