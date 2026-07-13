@@ -3,7 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiCalendar, FiLoader, FiPlus, FiTag, FiBookOpen } from "react-icons/fi";
+import {
+  FiBookOpen,
+  FiCalendar,
+  FiLoader,
+  FiPlus,
+  FiTag,
+} from "react-icons/fi";
 import * as z from "zod";
 import { useSchoolYear } from "@/app/context/SchoolYearContext";
 
@@ -108,7 +114,9 @@ export function PeriodForm({ onSubmit, onError }: Props) {
             ))}
           </select>
           {errors.schoolYearId && (
-            <p className="text-red-500 text-xs">{errors.schoolYearId.message}</p>
+            <p className="text-red-500 text-xs">
+              {errors.schoolYearId.message}
+            </p>
           )}
         </div>
 

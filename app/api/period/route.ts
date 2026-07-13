@@ -138,10 +138,7 @@ export async function PATCH(req: NextRequest) {
     });
   } catch (error) {
     if (error instanceof Error && error.message === "NOT_FOUND") {
-      return NextResponse.json(
-        { error: "Period not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Period not found" }, { status: 404 });
     }
     console.error("PATCH /api/period error:", error);
     return NextResponse.json(
