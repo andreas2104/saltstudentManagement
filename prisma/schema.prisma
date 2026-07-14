@@ -91,3 +91,18 @@ model Period {
   schoolYearId Int
   schoolYear   SchoolYear   @relation(fields: [schoolYearId], references: [schoolYearId])
 }
+
+enum ClassStatus {
+  ACTIVE
+  INACTIVE
+}
+model Class {
+  classId Int @id @default(autoincrement())
+  nom String
+  niveau String
+  status ClassStatus @default(ACTIVE)
+
+  schoolYearId Int
+  schoolYear SchoolYear @relation(fields: [schoolYearId], references: [schoolYearId])
+  
+}
