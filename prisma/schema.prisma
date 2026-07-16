@@ -83,6 +83,8 @@ model Class {
   nom          String
   niveau       String
   status       ClassStatus @default(ACTIVE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   schoolYearId Int
   schoolYear   SchoolYear  @relation(fields: [schoolYearId], references: [schoolYearId])
 }

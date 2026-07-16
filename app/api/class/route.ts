@@ -1,8 +1,8 @@
+import { ClassStatus, Status } from "@prisma/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { verifyAdminAccess, verifyUserAccess } from "@/lib/guards";
 import { prisma } from "@/lib/prisma";
-import { ClassStatus, Status } from "@prisma/client";
 
 const classSchema = z.object({
   nom: z.string().min(1, "Nom is required"),
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
     const classes = await prisma.class.findMany({
       orderBy: {
-        classId: "desc",
+        createdAt: "asc",
       },
       include: {
         schoolYear: true,
@@ -99,13 +99,19 @@ export async function POST(req: NextRequest) {
     if (error instanceof Error) {
       if (error.message === "NO_ACTIVE_SCHOOL_YEAR") {
         return NextResponse.json(
-          { error: "No active school year found. Please create or activate a school year first." },
+          {
+            error:
+              "No active school year found. Please create or activate a school year first.",
+          },
           { status: 400 },
         );
       }
       if (error.message === "ACTIVE_EXISTS") {
         return NextResponse.json(
-          { error: "The same class is already active in the current school year" },
+          {
+            error:
+              "The same class is already active in the current school year",
+          },
           { status: 409 },
         );
       }
