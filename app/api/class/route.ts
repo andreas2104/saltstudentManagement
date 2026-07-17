@@ -124,3 +124,43 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const accessError = await verifyAdminAccess(req);
+    if (accessError) return accessError;
+
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const { id, status } = body as { id: number; status: string };
+
+    if (!id || !Object.values(ClassStatus).includes(status as ClassStatus)) {
+      return NextResponse.json(
+        { error: "Invalid request. 'id' and valid 'status' are required." },
+        { status: 400 },
+      );
+    }
+
+    const updatedClass = await prisma.class.update({
+      where: { classId: id },
+      data: { status: status as ClassStatus },
+    });
+
+    return NextResponse.json({
+      message: "Class status updated successfully",
+      class: updatedClass,
+    });
+  } catch (error) {
+    console.error("PATCH /api/class error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+

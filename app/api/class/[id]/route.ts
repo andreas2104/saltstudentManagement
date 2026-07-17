@@ -92,10 +92,7 @@ export async function DELETE(
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
-        return NextResponse.json(
-          { error: "Class not found" },
-          { status: 404 },
-        );
+        return NextResponse.json({ error: "Class not found" }, { status: 404 });
       }
     }
     console.error("DELETE /api/class/[id] error:", error);
