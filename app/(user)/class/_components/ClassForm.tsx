@@ -8,8 +8,8 @@ import * as z from "zod";
 import { useSchoolYear } from "@/app/context/SchoolYearContext";
 
 const schema = z.object({
-  nom: z.string().min(1, "Nom is required (e.g., Terminale A)"),
-  niveau: z.string().min(1, "Niveau is required (e.g., Terminale)"),
+  name: z.string().min(1, "Name is required (e.g., Terminale A)"),
+  level: z.string().min(1, "Level is required (e.g., Terminale)"),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -66,37 +66,37 @@ export function ClassForm({ onSubmit, onError }: Props) {
 
         <div className="space-y-1.5">
           <label
-            htmlFor="nom"
+            htmlFor="name"
             className="text-sm font-medium text-gray-600 flex items-center gap-2"
           >
-            <FiTag className="text-gray-400" /> Nom (Class Name)
+            <FiTag className="text-gray-400" /> Name (Class Name)
           </label>
           <input
-            id="nom"
-            {...register("nom")}
+            id="name"
+            {...register("name")}
             placeholder="e.g. Terminale A"
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 outline-none transition-all"
           />
-          {errors.nom && (
-            <p className="text-red-500 text-xs">{errors.nom.message}</p>
+          {errors.name && (
+            <p className="text-red-500 text-xs">{errors.name.message}</p>
           )}
         </div>
 
         <div className="space-y-1.5">
           <label
-            htmlFor="niveau"
+            htmlFor="level"
             className="text-sm font-medium text-gray-600 flex items-center gap-2"
           >
-            <FiLayers className="text-gray-400" /> Niveau (Grade/Level)
+            <FiLayers className="text-gray-400" /> Level (Grade/Level)
           </label>
           <input
-            id="niveau"
-            {...register("niveau")}
+            id="level"
+            {...register("level")}
             placeholder="e.g. Terminale"
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 outline-none transition-all"
           />
-          {errors.niveau && (
-            <p className="text-red-500 text-xs">{errors.niveau.message}</p>
+          {errors.level && (
+            <p className="text-red-500 text-xs">{errors.level.message}</p>
           )}
         </div>
 

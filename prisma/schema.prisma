@@ -80,8 +80,8 @@ model Period {
 
 model Class {
   classId      Int         @id @default(autoincrement())
-  nom          String
-  niveau       String
+  name          String
+  level       String
   status       ClassStatus @default(ACTIVE)
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt

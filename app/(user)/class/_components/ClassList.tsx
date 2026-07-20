@@ -36,7 +36,9 @@ export function ClassList({
               <FiLayers className="text-2xl text-gray-300" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-600">No classes yet</p>
+              <p className="text-sm font-medium text-gray-600">
+                No classes yet
+              </p>
               <p className="text-xs text-gray-400 mt-1">
                 Create your first class for the active school year.
               </p>

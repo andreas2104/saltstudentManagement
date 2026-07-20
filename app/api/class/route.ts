@@ -5,8 +5,8 @@ import { verifyAdminAccess, verifyUserAccess } from "@/lib/guards";
 import { prisma } from "@/lib/prisma";
 
 const classSchema = z.object({
-  nom: z.string().min(1, "Nom is required"),
-  niveau: z.string().min(1, "Niveau is required"),
+  name: z.string().min(1, "Name is required"),
+  level: z.string().min(1, "Level is required"),
   status: z.nativeEnum(ClassStatus).optional(),
 });
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
 
     const classes = await prisma.class.findMany({
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
       include: {
         schoolYear: true,
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { nom, niveau, status } = parsed.data;
+    const { name, level, status } = parsed.data;
 
     const classItem = await prisma.$transaction(async (tx) => {
       const activeSchoolYear = await tx.schoolYear.findFirst({
@@ -70,8 +70,8 @@ export async function POST(req: NextRequest) {
 
       const existingActive = await tx.class.findFirst({
         where: {
-          nom,
-          niveau,
+          name,
+          level,
           status: ClassStatus.ACTIVE,
           schoolYearId: activeSchoolYear.schoolYearId,
         },
@@ -83,8 +83,8 @@ export async function POST(req: NextRequest) {
 
       return tx.class.create({
         data: {
-          nom,
-          niveau,
+          name,
+          level,
           status: status || ClassStatus.ACTIVE,
           schoolYearId: activeSchoolYear.schoolYearId,
         },
@@ -163,4 +163,3 @@ export async function PATCH(req: NextRequest) {
     );
   }
 }
-
