@@ -24,7 +24,7 @@ export function useClasses() {
     await fetchClasses();
   }, [fetchClasses]);
 
-  const handleCreate = async (payload: { nom: string; niveau: string }) => {
+  const handleCreate = async (payload: { name: string; level: string }) => {
     const res = await fetch("/api/class", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

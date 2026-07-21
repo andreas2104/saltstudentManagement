@@ -36,7 +36,7 @@ export function ClassItem({ classItem, onToggleStatus, onDelete }: Props) {
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-base font-semibold text-gray-900">
-                {classItem.nom}
+                {classItem.name}
               </h4>
               {classItem.schoolYear && (
                 <span className="text-xs text-gray-500 flex items-center gap-1">
@@ -47,7 +47,7 @@ export function ClassItem({ classItem, onToggleStatus, onDelete }: Props) {
             </div>
             <div className="flex items-center gap-3 mt-1">
               <span className="text-xs text-gray-400">
-                Level: {classItem.niveau}
+                Level: {classItem.level}
               </span>
               <span
                 className={`text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1 border ${
@@ -82,7 +82,7 @@ export function ClassItem({ classItem, onToggleStatus, onDelete }: Props) {
             type="button"
             onClick={() => onDelete(classItem.classId)}
             className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 border border-transparent hover:border-red-100 transition-all"
-            aria-label={`Delete ${classItem.nom}`}
+            aria-label={`Delete ${classItem.name}`}
           >
             <FiTrash2 />
           </button>

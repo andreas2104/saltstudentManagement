@@ -45,7 +45,6 @@ export async function PUT(
   try {
     const accessError = await verifyAdminAccess(req);
     if (accessError) return accessError;
-
     const { id } = await params;
     const classId = Number(id);
 
