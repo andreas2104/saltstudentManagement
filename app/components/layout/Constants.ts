@@ -3,8 +3,11 @@ export interface NavItem {
   label: string;
 }
 
-export const  NAVIGATION_ROUTES: NavItem[] = [
+export const NAVIGATION_ROUTES: NavItem[] = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/schoolYear", label: "SchoolYear" },
-  { href: "/users", label: "Users"}
+  { href: "/period", label: "Period" },
+  { href: "/class", label: "Class" },
+  { href: "/course", label: "Course" },
+  { href: "/users", label: "Users" },
 ];

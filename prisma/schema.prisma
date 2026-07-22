@@ -6,22 +6,12 @@ datasource db {
   provider = "sqlite"
 }
 
-
-enum Role {
-  ADMIN
-  INSTRUCTOR
-}
-enum Status {
-  ACTIVE
-  INACTIVE
-}
-
 model User {
   userId    Int       @id @default(autoincrement())
   name      String
-  lastname String
-  contact String
-  status  Status @default(ACTIVE)
+  lastname  String
+  contact   String
+  status    Status    @default(ACTIVE)
   email     String    @unique
   role      Role      @default(INSTRUCTOR)
   password  String
@@ -64,15 +54,74 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-
 model SchoolYear {
-  schoolYearId Int @id @default(autoincrement())
-  label String
-  startDate DateTime
-  endDate DateTime
-  status Status @default(ACTIVE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  schoolYearId Int      @id @default(autoincrement())
+  label        String
+  startDate    DateTime
+  endDate      DateTime
+  status       Status   @default(ACTIVE)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  class        Class[]
+  periods      Period[]
 }
 
+model Period {
+  periodId     Int          @id @default(autoincrement())
+  label        String
+  startDate    DateTime
+  endDate      DateTime
+  status       PeriodStatus @default(DRAFT)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  schoolYearId Int
+  schoolYear   SchoolYear   @relation(fields: [schoolYearId], references: [schoolYearId])
+}
 
+model Class {
+  classId      Int         @id @default(autoincrement())
+  name         String
+  level        String
+  status       ClassStatus @default(ACTIVE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  schoolYearId Int
+  schoolYear   SchoolYear  @relation(fields: [schoolYearId], references: [schoolYearId])
+  courses      Course[]
+}
+
+model Course {
+  courseId     Int          @id @default(autoincrement())
+  name         String
+  code         String
+  coefficient  Int
+  statusCourse CourseStatus @default(ACTIVE)
+  classes      Class[] //this is a relation N to N
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now())
+}
+
+enum Role {
+  ADMIN
+  INSTRUCTOR
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum PeriodStatus {
+  DRAFT
+  CLOSED
+}
+
+enum ClassStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum CourseStatus {
+  ACTIVE
+  INACTIVE
+}
