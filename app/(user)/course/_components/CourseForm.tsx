@@ -3,7 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiBookOpen, FiHash, FiLayers, FiLoader, FiPlus, FiTag } from "react-icons/fi";
+import {
+  FiBookOpen,
+  FiHash,
+  FiLayers,
+  FiLoader,
+  FiPlus,
+  FiTag,
+} from "react-icons/fi";
 import * as z from "zod";
 import type { Class } from "../../class/_types";
 import type { Course } from "../_types";
@@ -178,9 +185,9 @@ export function CourseForm({
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-600 flex items-center gap-2">
+          <span className="text-sm font-medium text-gray-600 flex items-center gap-2">
             <FiLayers className="text-gray-400" /> Classes
-          </label>
+          </span>
           {classesLoading ? (
             <p className="text-xs text-gray-400">Loading classes...</p>
           ) : classes.length === 0 ? (
@@ -201,7 +208,8 @@ export function CourseForm({
                     className="rounded border-gray-300 text-gray-900 focus:ring-gray-950 accent-gray-900"
                   />
                   <span>
-                    {cls.name} <span className="text-xs text-gray-400">({cls.level})</span>
+                    {cls.name}{" "}
+                    <span className="text-xs text-gray-400">({cls.level})</span>
                   </span>
                 </label>
               ))}

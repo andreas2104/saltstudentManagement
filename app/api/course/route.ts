@@ -113,9 +113,14 @@ export async function PATCH(req: NextRequest) {
 
     const { id, statusCourse } = body as { id: number; statusCourse: string };
 
-    if (!id || !Object.values(CourseStatus).includes(statusCourse as CourseStatus)) {
+    if (
+      !id ||
+      !Object.values(CourseStatus).includes(statusCourse as CourseStatus)
+    ) {
       return NextResponse.json(
-        { error: "Invalid request. 'id' and valid 'statusCourse' are required." },
+        {
+          error: "Invalid request. 'id' and valid 'statusCourse' are required.",
+        },
         { status: 400 },
       );
     }
