@@ -8,5 +8,6 @@ export const NAVIGATION_ROUTES: NavItem[] = [
   { href: "/schoolYear", label: "SchoolYear" },
   { href: "/period", label: "Period" },
   { href: "/class", label: "Class" },
+  { href: "/course", label: "Course" },
   { href: "/users", label: "Users" },
 ];

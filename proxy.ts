@@ -12,7 +12,9 @@ const adminOnlyPaths = [
   "/period/update",
   "/schoolYear/add",
   "/schoolYear/update",
-  "users/add",
+  "/course/add",
+  "/course/update",
+  "/users/add",
   "/users/update",
 ];
 
