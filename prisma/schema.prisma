@@ -7,18 +7,21 @@ datasource db {
 }
 
 model User {
-  userId    Int       @id @default(autoincrement())
-  name      String
-  lastname  String
-  contact   String
-  status    Status    @default(ACTIVE)
-  email     String    @unique
-  role      Role      @default(INSTRUCTOR)
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  account   Account[]
-  sessions  Session[]
+  userId             Int          @id @default(autoincrement())
+  name               String
+  lastname           String
+  contact            String
+  status             Status       @default(ACTIVE)
+  email              String       @unique
+  role               Role         @default(INSTRUCTOR)
+  password           String
+  registrationNumber String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  account            Account[]
+  sessions           Session[]
+  assignments        Assignment[]
+  createdGrades      Grade[]      @relation("CreatedGrades")
 }
 
 model Account {
@@ -55,15 +58,17 @@ model VerificationToken {
 }
 
 model SchoolYear {
-  schoolYearId Int      @id @default(autoincrement())
+  schoolYearId Int          @id @default(autoincrement())
   label        String
   startDate    DateTime
   endDate      DateTime
-  status       Status   @default(ACTIVE)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  status       Status       @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   class        Class[]
   periods      Period[]
+  assignments  Assignment[]
+  schedules    Schedule[]
 }
 
 model Period {
@@ -76,18 +81,21 @@ model Period {
   updatedAt    DateTime     @updatedAt
   schoolYearId Int
   schoolYear   SchoolYear   @relation(fields: [schoolYearId], references: [schoolYearId])
+  grades       Grade[]
 }
 
 model Class {
-  classId      Int         @id @default(autoincrement())
+  classId      Int          @id @default(autoincrement())
   name         String
   level        String
-  status       ClassStatus @default(ACTIVE)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  status       ClassStatus  @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   schoolYearId Int
-  schoolYear   SchoolYear  @relation(fields: [schoolYearId], references: [schoolYearId])
+  schoolYear   SchoolYear   @relation(fields: [schoolYearId], references: [schoolYearId])
   courses      Course[]
+  students     Student[]
+  assignments  Assignment[]
 }
 
 model Course {
@@ -96,9 +104,76 @@ model Course {
   code         String
   coefficient  Int
   statusCourse CourseStatus @default(ACTIVE)
-  classes      Class[] //this is a relation N to N
+  classes      Class[]
+  assignments  Assignment[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @default(now())
+}
+
+model Assignment {
+  assignmentId Int      @id @default(autoincrement())
+  teacherId    Int
+  classId      Int
+  courseId     Int
+  schoolYearId Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  teacher    User       @relation(fields: [teacherId], references: [userId], onDelete: Cascade)
+  class      Class      @relation(fields: [classId], references: [classId], onDelete: Cascade)
+  course     Course     @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  schoolYear SchoolYear @relation(fields: [schoolYearId], references: [schoolYearId], onDelete: Cascade)
+  grades     Grade[]
+  schedules  Schedule[]
+
+  @@unique([teacherId, classId, courseId, schoolYearId])
+}
+
+model Grade {
+  gradeId      Int      @id @default(autoincrement())
+  value        Float
+  maxScore     Float    @default(20)
+  comment      String?
+  studentId    Int
+  periodId     Int
+  assignmentId Int
+  createdById  Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student    Student    @relation(fields: [studentId], references: [studentId], onDelete: Cascade)
+  period     Period     @relation(fields: [periodId], references: [periodId], onDelete: Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references: [assignmentId], onDelete: Cascade)
+  createdBy  User       @relation("CreatedGrades", fields: [createdById], references: [userId], onDelete: Cascade)
+}
+
+model Student {
+  studentId          Int      @id @default(autoincrement())
+  registrationNumber String?  @unique
+  lastname           String
+  firstname          String
+  gender             Gender
+  birthDate          DateTime
+  birthPlace         String?
+  address            String?
+  parentPhone        String?
+  parentEmail        String?
+  status             Status   @default(ACTIVE)
+  classId            Int
+  class              Class    @relation(fields: [classId], references: [classId], onDelete: Cascade)
+  grades             Grade[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model SchoolSettings {
+  id         Int      @id @default(1)
+  schoolName String
+  address    String?
+  phone      String?
+  email      String?
+  logoUrl    String?
+  updatedAt  DateTime @updatedAt
 }
 
 enum Role {
@@ -124,4 +199,35 @@ enum ClassStatus {
 enum CourseStatus {
   ACTIVE
   INACTIVE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+model Schedule {
+  scheduleId   Int       @id @default(autoincrement())
+  dayOfWeek    DayOfWeek
+  startTime    String
+  endTime      String
+  classroom    String?
+  assignmentId Int
+  schoolYearId Int
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  assignment Assignment @relation(fields: [assignmentId], references: [assignmentId], onDelete: Cascade)
+  schoolYear SchoolYear @relation(fields: [schoolYearId], references: [schoolYearId], onDelete: Cascade)
+
+  @@unique([assignmentId, schoolYearId])
 }
